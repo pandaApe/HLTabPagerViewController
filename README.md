@@ -6,6 +6,9 @@
 [![Platform](https://img.shields.io/cocoapods/p/HLTabPagerViewController.svg?style=flat)](http://cocoapods.org/pods/HLTabPagerViewController)
 
 
+<img src="example.gif" alt="Animated gif">
+
+
 ## Installation
 **CocoaPods** (recommended)
 Add the following line to your `Podfile`:
