@@ -20,6 +20,7 @@ Add the following line to your `Podfile`:
 And then add `import HLTabPagerViewController` to your view controller.
 
 ## Usage
+
 To use it, you should create a view controller that extends `HLTabPagerViewController `. Write your `viewDidLoad` as follows:
 
 ```swift
@@ -61,7 +62,6 @@ extension BaseViewController: HLTabPagerDataSource, HLTabPagerDelegate {
 The data source methods will allow you to provide content to your tab pager view controller.
 
 #### Required Methods
-
 ```swift
 func numberOfViewControllers() -> Int
 
@@ -70,7 +70,7 @@ func viewController(forIndex index: Int) -> UIViewController
 ```
 
 #### Optional Methods
-**Note that despite being optional, the tab setup will require you to return either a `UIView` or an `String` to work. Pls implement either viewForTabAtIndex: or titleForTabAtIndex: **
+**Note that despite being optional, the tab setup will require you to return either a `UIView` or an `String` to work. Pls implement either viewForTabAtIndex: or titleForTabAtIndex:**
 
 ```swift
 
@@ -108,7 +108,6 @@ optional func tabPager(_ tabPager: HLTabPagerViewController, didTransitionToTab 
 ```
 
 ### Open
-
 There are two public methods:
 
 ```swift
@@ -131,7 +130,8 @@ open var selectedIndex = 0 // will return the index of the current selected tab.
 
 ```
 
-### License
+## License
+
 This code is distributed under the terms and conditions of the MIT license.
 
 
