@@ -11,6 +11,7 @@ import UIKit
 
 @objc public protocol HLTabPagerDataSource: NSObjectProtocol{
     
+    
     func numberOfViewControllers() -> Int
     
     func viewController(forIndex index: Int) -> UIViewController

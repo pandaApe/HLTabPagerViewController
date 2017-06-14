@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-protocol HLTabScrollDelegate{
+@objc protocol HLTabScrollDelegate {
     
     func tabScrollView(_ tabScrollView: HLTabScrollView, didSelectTabAtIndex index: Int) -> Void
 }
@@ -24,7 +24,7 @@ class HLTabScrollView: UIScrollView {
     fileprivate var indicatorWidthConstraint: NSLayoutConstraint!
     fileprivate var indicatorCenterConstraint: NSLayoutConstraint!
     
-    var tabScrollDelegate:HLTabScrollDelegate?
+    weak var tabScrollDelegate: HLTabScrollDelegate?
     
 }
 
@@ -73,13 +73,14 @@ extension HLTabScrollView {
         self.addConstraints(toContentView: contentView,
                             bottomLine: bottomLine,
                             bottomLineHeight: bottomLineHeight)
+        
         self.addTabs(fromTabViews: tabViews, toContentView: contentView)
         self.addIndicators(toContentView: contentView, withColor: color)
         
         self.selectTab(atIndex: index, animated: false)
     }
     
-    public override var frame: CGRect{
+    public override var frame: CGRect {
         
         didSet{
             
@@ -128,7 +129,6 @@ extension HLTabScrollView {
                                               multiplier: 1.0,
                                               constant: -bottomLineHeight))
         
-        
         self.tabsLeadingConstraint = NSLayoutConstraint(item: contentView,
                                                         attribute: .leading,
                                                         relatedBy: .equal,
@@ -156,15 +156,14 @@ extension HLTabScrollView {
         contentView.addSubview(tabIndicator)
         self.tabIndicator               = tabIndicator
         
-        let format = "V:[tabIndicator(3)]-0-|"
-        let views = ["tabIndicator":tabIndicator]
+        let format  = "V:[tabIndicator(3)]-0-|"
+        let views   = ["tabIndicator":tabIndicator]
         
         contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: format,
                                                                    options: [],
                                                                    metrics: nil,
                                                                    views: views))
-        
-        
+    
         self.indicatorWidthConstraint = NSLayoutConstraint(item: tabIndicator,
                                                            attribute: .width,
                                                            relatedBy: .equal,
@@ -183,7 +182,6 @@ extension HLTabScrollView {
         
         contentView.addConstraints([self.indicatorWidthConstraint, self.indicatorCenterConstraint])
     }
-    
     
     fileprivate func addTabs(fromTabViews tabViews: [UIView], toContentView contentView: UIView) {
         
@@ -272,8 +270,8 @@ extension HLTabScrollView {
         
         if diff != 0 {
             
-            let xOffset = self.contentOffset.x + diff
-            self.contentOffset = CGPoint(x: xOffset, y: self.contentOffset.y)
+            let xOffset         = self.contentOffset.x + diff
+            self.contentOffset  = CGPoint(x: xOffset, y: self.contentOffset.y)
         }
     }
     

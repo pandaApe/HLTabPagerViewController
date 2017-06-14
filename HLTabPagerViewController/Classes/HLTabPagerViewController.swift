@@ -39,21 +39,24 @@ open class HLTabPagerViewController: UIViewController {
             fatalError("Not implement data Source")
         }
         
-        if self.dataSource?.numberOfViewControllers() == 0 {
+        guard self.dataSource?.numberOfViewControllers() != 0 else {
+           
             print("number of child view controllers is ZERO.")
             return
         }
         
         self.view.removeConstraints(self.view.constraints)
+        self.tabTitles.removeAll()
+        self.viewControllers.removeAll()
+        self.selectedIndex = 0
         
         for index in 0 ..< dataSource.numberOfViewControllers() {
             
-            if let viewController = self.dataSource?.viewController(forIndex: index) {
-                
-                self.viewControllers.append(viewController)
-            }
+            let viewController = dataSource.viewController(forIndex: index)
             
-            if let title = self.dataSource?.titleForTab?(atIndex: index) {
+            self.viewControllers.append(viewController)
+            
+            if let title = dataSource.titleForTab?(atIndex: index) {
                 
                 self.tabTitles.append(title)
             }
@@ -68,8 +71,6 @@ open class HLTabPagerViewController: UIViewController {
         self.pageViewController.view.frame = frame
         
         self.pageViewController.setViewControllers([self.viewControllers.first!], direction: .reverse, animated: false, completion: nil)
-        
-        self.selectedIndex = 0
         
         self.view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:[header]-0-[pager]-0-|",
                                                                 options: [],
@@ -99,10 +100,13 @@ open class HLTabPagerViewController: UIViewController {
         self.selectedIndex = index
     }
 
-    
     fileprivate func reloadTabs() {
         
-        self.setupUI()
+        self.headerHeight       = self.dataSource?.tabHeight?() ?? 44.0
+        
+        self.headerColor        = self.dataSource?.tabColor?() ?? UIColor.orange
+        
+        self.tabBackgroundColor = self.dataSource?.tabBackgroundColor?() ?? UIColor(white: 0.95, alpha: 1)
         
         var tabViews :[UIView]
         
@@ -120,15 +124,7 @@ open class HLTabPagerViewController: UIViewController {
         var frame           = self.view.bounds
         frame.size.height   = self.headerHeight
         
-        var bottomLineHeight: CGFloat
-        
-        if let lineHeight   = self.dataSource?.bottomLineHeight?() {
-           
-            bottomLineHeight = lineHeight
-        }else{
-            
-            bottomLineHeight = 2.0
-        }
+        let bottomLineHeight = self.dataSource?.bottomLineHeight?() ?? 2.0
         
         self.headerScrollView?.removeFromSuperview()
         self.headerScrollView = HLTabScrollView(frame: frame,
@@ -157,56 +153,14 @@ open class HLTabPagerViewController: UIViewController {
         
     }
     
-    fileprivate func setupUI() {
-        
-        if let headerHeight = self.dataSource?.tabHeight?() {
-            
-            self.headerHeight = headerHeight
-        }else {
-            
-            self.headerHeight = 44.0
-        }
-        
-        if let tabColor = self.dataSource?.tabColor?() {
-            
-            self.headerColor = tabColor
-        }else{
-            
-            self.headerColor = UIColor.orange
-        }
-        
-        if let bgColor = self.dataSource?.tabBackgroundColor?() {
-            
-            self.tabBackgroundColor = bgColor
-        }else{
-            
-            self.tabBackgroundColor = UIColor(white: 0.95, alpha: 1)
-        }
-    }
     
     fileprivate func addTabsFromTitles() -> [UIView] {
         
         var tabViews = [UIView]()
         
-        var font: UIFont
+        let font: UIFont = self.dataSource?.titleFont?() ?? UIFont(name: "HelveticaNeue-Thin", size: 20)!
         
-        if let titleFont = self.dataSource?.titleFont {
-            
-            font = titleFont()
-        }else{
-            
-            font = UIFont(name: "HelveticaNeue-Thin", size: 20)!
-        }
-        
-        var color: UIColor
-        
-        if let titleColor = self.dataSource?.titleColor {
-            
-            color = titleColor()
-        }else{
-            
-            color = UIColor.black
-        }
+        let color = self.dataSource?.titleColor?() ?? UIColor.black
         
         for title in self.tabTitles {
             
@@ -230,6 +184,7 @@ open class HLTabPagerViewController: UIViewController {
     fileprivate func addTabsFromViews() -> [UIView] {
         
         var tabViews = [UIView]()
+        
         for index in 0 ..< self.viewControllers.count {
             
             if let view = self.dataSource?.viewForTab?(atIndex: index) {
